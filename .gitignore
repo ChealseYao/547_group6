@@ -1,0 +1,12 @@
+# Ignore node_modules
+node_modules/
+
+# Ignore map files
+*.map
+
+# Ignore build and dist directories
+dist/
+build/
+
+# Optional: Ignore environment files
+.env
