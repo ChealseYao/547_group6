@@ -27,7 +27,7 @@ root/
 │
 ├── .gitignore                         # Specifies files to ignore in the repository
 ├── README.md                          # Main documentation (this file)
-└── lambda-bluesky.yaml                # AWS SAM configuration file for deployment
+└── lambda-bluesky.yaml                # lambda_bluesky is used to upload data from bluesky to S3
 ```
 
 ---
@@ -49,6 +49,52 @@ The application has been deployed to AWS and is accessible via the following URL
 
 #### **b. Deploy Lambdas**
 Each Lambda function must be deployed separately. Navigate to the respective directories and install dependencies:
+
+For **bluesky-lambda**:
+Bluesky Lambda Deployment with Docker
+Overview
+This guide provides step-by-step instructions to package, push, and deploy the bluesky-lambda function using Docker and AWS Lambda with a container image.
+Prerequisites
+AWS CLI installed and configured with proper permissions. 
+Docker installed and running. 
+IAM Role ARN with permissions for Lambda execution and ECR access. 
+AWS ECR Repository (Elastic Container Registry) setup. 
+Steps to Deploy
+1. Navigate to the Project Directory
+Go to the bluesky-lambda folder:
+cd bluesky-lambda
+2. Build the Docker Image
+Run the following command to build the Docker image:
+docker build -t bluesky-lambda-image .
+3. Push the Docker Image to AWS ECR
+a. Authenticate Docker to AWS ECR
+aws ecr get-login-password --region <YOUR_REGION> | \
+docker login --username AWS --password-stdin <YOUR_ACCOUNT_ID>.dkr.ecr.<YOUR_REGION>.amazonaws.com
+b. Create an ECR Repository (if it doesn’t exist)
+aws ecr create-repository --repository-name bluesky-lambda-repo
+c. Tag and Push the Image
+Tag the local image and push it to AWS ECR:
+docker tag bluesky-lambda-image:latest <YOUR_ACCOUNT_ID>.dkr.ecr.<YOUR_REGION>.amazonaws.com/bluesky-lambda-repo:latest
+
+docker push <YOUR_ACCOUNT_ID>.dkr.ecr.<YOUR_REGION>.amazonaws.com/bluesky-lambda-repo:latest
+4. Deploy the Lambda Function
+Deploy the Lambda function with the Docker image:
+aws lambda create-function --function-name BlueskyLambda \
+    --package-type Image \
+    --code ImageUri=<YOUR_ACCOUNT_ID>.dkr.ecr.<YOUR_REGION>.amazonaws.com/bluesky-lambda-repo:latest \
+    --role <YOUR_IAM_ROLE_ARN>
+Dockerfile Example
+Ensure your Dockerfile contains the following:
+FROM public.ecr.aws/lambda/nodejs14.x
+COPY index.js ${LAMBDA_TASK_ROOT}
+CMD [ "index.handler" ]
+Verify Deployment
+Invoke the Lambda function to confirm it's working:
+aws lambda invoke --function-name BlueskyLambda response.json
+Check the response.json file for the output.
+Cleanup Resources
+To remove the Lambda function and ECR repository:
+aws lambda delete-funct
 
 For **sentiment-analysis-lambda**:
 ```bash
