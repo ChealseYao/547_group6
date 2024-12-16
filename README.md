@@ -72,8 +72,8 @@ aws lambda create-function --function-name GetDataLambda \
 
 #### **c. Configure API Gateway**
 Use AWS API Gateway to expose the Lambda functions via REST endpoints. Configure the endpoints as follows:
-- **Upload Data API**: Connects to `SentimentAnalysisLambda`.
-- **Retrieve Data API**: Connects to `GetDataLambda`.
+- **Upload Data API**: Connects to `GetDataLambda`.
+- **Analysis Data API**: Connects to `SentimentAnalysisLambda`.
 
 ---
 
