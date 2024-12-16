@@ -29,17 +29,17 @@ This repository contains the frontend implementation for the Sentiment Analysis 
    ```bash
    git clone https://github.com/<your-github-username>/<your-repo-name>.git
    cd <your-repo-name>
-   ’‘’
+  
 
 2. Install dependencies:
-    ‘’‘bash
+    ```bash
     npm install
-    ```
+  
 
 3. Start the development server:
-    ‘’‘bash
+    ```bash
     npm run serve
-    ’‘’
+
 
 ## Usage
 
